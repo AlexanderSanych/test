@@ -1,7 +1,7 @@
 pipeline {
    agent {
         dockerfile {
-            filename 'Dockerfile.build'
+            filename 'Dockerfile'
             args '-p 83:80'
         }
     }
