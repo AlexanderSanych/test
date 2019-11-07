@@ -1,15 +1,19 @@
 pipeline {
-   agent {
-        dockerfile {
-            filename 'Dockerfile'
-            args '-p 80:80'
-        }
-    }
-
+   agent any
     stages {
-        stage('Test') {
+        stage('step 1') {
             steps {
-                sh 'node --version'
+                sh 'docker build -t san_nginx .'
+            }
+        }
+        stage('step 2'){
+            steps {
+                sh 'docker run -dit --name sn -p 80:80 san_nginx'
+            }
+        }
+        stage('step 3') {
+            steps {
+                sh 'echo AAAAA!!!!!'
             }
         }
     }
