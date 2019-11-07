@@ -8,12 +8,7 @@ pipeline {
         }
         stage('step 2 run'){
             steps {
-               if ($(docker images -q nginx)) {
                   sh 'docker run -dit --name sn -p 80:80 san_nginx'
-               } else {
-                  echo "NNNNNNNN"
-               }
-               
             }
         }
         stage('step 3 test') {
