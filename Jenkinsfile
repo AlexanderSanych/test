@@ -1,21 +1,17 @@
 pipeline {
    agent any
     stages {
-        stage('step 1') {
+        stage('step 1 build') {
             steps {
                 sh 'docker build -t san_nginx .'
             }
         }
-        stage('step 2'){
+        stage('step 2 run'){
             steps {
-               sh 'if [ "$(docker images -q san_nginx)" ]; then \
-                       docker run -dit --name sn -p 80:80 san_nginx \
-                    else \
-                       echo "No such images" \
-               fi'
+               sh 'docker run -dit --name sn -p 80:80 san_nginx'
             }
         }
-        stage('step 3') {
+        stage('step 3 test') {
             steps {
                 sh 'echo AAAAA!!!!!'
             }
