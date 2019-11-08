@@ -1,0 +1,58 @@
+if [ "$(docker images -q san_nginx:latest)" ]; then
+   echo "Images exists"
+
+   if [ "$(docker ps -q -f name=sn)" ]; then
+      echo "Container running"
+      docker stop sn
+   fi
+
+   if [ "$(docker ps -aq -f status=exited -f name=sn)" ]; then
+      echo "Remove container"
+      docker rm sn
+   fi
+
+   if [ "$(docker images -q san_nginx:latest)" ]; then
+      echo "Remove old backup"
+      docker rmi san_nginx:buckup
+   fi
+
+   echo "Buckup image san_nginx to san_nginx:old"
+   docker tag san_nginx:latest san_nginx:buckup
+   docker rmi san_nginx:latest
+
+else
+   echo "No such images"
+fi
+
+docker build -t san_nginx .
+docker run -dit --name sn -p 80:80 san_nginx
+
+if [ "$(docker ps -q -f name=sn)" ]; then
+   echo "Container running"
+else
+   echo "Container not running, rollback"
+
+   if [ "$(docker ps -aq -f status=exited -f name=sn)" ]; then
+      echo "Remove bad container"
+      docker rm sn
+   fi
+
+   if [ "$(docker images -q san_nginx:buckup)" ]; then
+      echo "Rollback previous image"
+      docker tag san_nginx:buckup san_nginx:latest
+      docker rmi san_nginx:buckup
+   fi
+
+   if [ "$(docker images -q san_nginx:latest)" ]; then
+      echo "Start previous image"
+      docker run -dit --name sn -p 80:80 san_nginx:latest
+
+      if [ "$(docker ps -q -f name=sn)" ]; then
+         echo "Container running"
+      else
+         echo "ERROR! Container not runningk"
+      fi
+   else
+      echo "ERROR! Image not found"
+   fi
+fi
