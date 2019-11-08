@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('step') {
             steps {
-                sh './rebuild_docker'
+                sh 'rebuild_docker'
             }
         }
     }
