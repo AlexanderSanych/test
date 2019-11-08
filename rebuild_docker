@@ -2,7 +2,7 @@ if [ "$(docker images -q san_nginx:latest)" ]; then
    echo "Images exists"
 
    if [ "$(docker ps -q -f name=sn)" ]; then
-      echo "Container running"
+      echo "The container is working"
       docker stop sn
    fi
 
@@ -13,11 +13,11 @@ if [ "$(docker images -q san_nginx:latest)" ]; then
 
    if [ "$(docker images -q san_nginx:latest)" ]; then
       echo "Remove old backup"
-      docker rmi san_nginx:buckup
+      docker rmi san_nginx:backup
    fi
 
-   echo "Buckup image san_nginx to san_nginx:old"
-   docker tag san_nginx:latest san_nginx:buckup
+   echo "Backup image san_nginx to san_nginx:backup"
+   docker tag san_nginx:latest san_nginx:backup
    docker rmi san_nginx:latest
 
 else
