@@ -1,8 +1,9 @@
+
 if [ "$(docker images -q san_nginx:latest)" ]; then
    echo "Images exists"
 
    if [ "$(docker ps -q -f name=sn)" ]; then
-      echo "The container is working"
+      echo "The container is working. Stop"
       docker stop sn
    fi
 
@@ -19,11 +20,9 @@ if [ "$(docker images -q san_nginx:latest)" ]; then
    echo "Backup image san_nginx to san_nginx:backup"
    docker tag san_nginx:latest san_nginx:backup
    docker rmi san_nginx:latest
-
-else
-   echo "No such images"
 fi
 
+echo "Building a new image"
 docker build -t san_nginx .
 docker run --rm -d -p 80:80 --name sn san_nginx
 
