@@ -11,7 +11,7 @@ if [ "$(docker images -q san_nginx:latest)" ]; then
       docker rm sn
    fi
 
-   if [ "$(docker images -q san_nginx:latest)" ]; then
+   if [ "$(docker images -q san_nginx:backup)" ]; then
       echo "Remove old backup"
       docker rmi san_nginx:backup
    fi
@@ -31,6 +31,7 @@ STATUS_CODE=$(curl -sL -w "%{http_code}" localhost:80 -o /dev/null)
 
 if [ "$(docker ps -q -f name=sn)" ] && [ "$STATUS_CODE" == "200" ]; then
    echo "Container running and Nginx has come up and ready to use"
+   docker rmi san_nginx:backup
 else
    echo "ERROR. Container not running. Nginx returned CODE: $STATUS_CODE. Rollback"
 
@@ -41,6 +42,7 @@ else
 
    if [ "$(docker images -q san_nginx:backup)" ]; then
       echo "Rollback previous image"
+      docker rmi san_nginx:latest
       docker tag san_nginx:backup san_nginx:latest
       docker rmi san_nginx:backup
    fi
