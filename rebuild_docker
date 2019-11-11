@@ -26,11 +26,14 @@ fi
 
 docker build -t san_nginx .
 docker run --rm -d -p 80:80 --name sn san_nginx
-sleep 5
-STATUS_CODE=$(curl -sL -w "%{http_code}" localhost:80 -o /dev/null)
 
-if [ "$(docker ps -q -f name=sn)" ] && [ "$STATUS_CODE" == "200" ]; then
-   echo "Container running and Nginx has come up and ready to use"
+## sleep 5
+##STATUS_CODE=$(curl -sL -w "%{http_code}" localhost:80 -o /dev/null)
+## if [ "$(docker ps -q -f name=sn)" ] && [ "$STATUS_CODE" == "200" ]; then
+##    echo "Container running and Nginx has come up and ready to use"
+
+if [ "$(docker ps -q -f name=sn)" ] ; then
+   echo "Container running"
    docker rmi san_nginx:backup
 else
    echo "ERROR. Container not running. Nginx returned CODE: $STATUS_CODE. Rollback"
